@@ -24,7 +24,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
-         
+
 % You need to return the following variables correctly 
 J = 0;
 Theta1_grad = zeros(size(Theta1));
@@ -61,20 +61,30 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+[prediction, a1, a2, z2, z3] = hypothesis(Theta1, Theta2, X);
 
+vecY = transformRes(y, num_labels);
+var1 = vecY .* log(prediction) + (1 - vecY) .* log(1 - prediction);
+sumK = sum(var1');
+sumM = sum(sumK);
 
+Theta1_r = Theta1(:, 2:size(Theta1, 2)) .^ 2;
+Theta2_r = Theta2(:, 2:size(Theta2, 2)) .^ 2;
+regularization = (lambda/ (2*m)) * (sum(sum(Theta1_r')) + sum(sum(Theta2_r')));
 
+J = (-1/m) * sumM + regularization;
 
+D_1 = Theta1;
+D_2 = Theta2;
 
+delta_3 = prediction - vecY;
+delta_2 = (delta_3*D_2 .* sigmoidGradient([ones(size(z2, 1), 1) z2]))(:, 2:end);
 
+D_1 = delta_2' * a1;
+D_2 = delta_3' * a2;
 
-
-
-
-
-
-
-
+Theta1_grad = (1/m) .* D_1 + (lambda/m)*[zeros(size(Theta1,1), 1) Theta1(:, 2:end)];
+Theta2_grad = (1/m) .* D_2 + (lambda/m)*[zeros(size(Theta2,1), 1) Theta2(:, 2:end)];
 
 
 
