@@ -15,7 +15,8 @@ sim = 0;
 %               sigma
 %
 %
-
+distance = (x1 - x2) .^ 2
+sim = e .^ ( (-1 * sum(distance)) / (2 * (sigma ^ 2)))
 
 
 
